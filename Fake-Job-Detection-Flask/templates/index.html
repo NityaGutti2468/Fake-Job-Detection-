@@ -1,100 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake Job Detection</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 850px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #222;
-        }
-        p {
-            text-align: center;
-            color: #555;
-        }
-        textarea {
-            width: 100%;
-            height: 220px;
-            padding: 15px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            resize: vertical;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 18px;
-            background: #1f6feb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 17px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #1557b0;
-        }
-        .result {
-            margin-top: 25px;
-            padding: 18px;
-            border-radius: 8px;
-            background: #eef5ff;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: #1f3b64;
-        }
-        .confidence {
-            text-align: center;
-            color: #444;
-            margin-top: 10px;
-            font-size: 16px;
-        }
-        .note {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-            text-align: left;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Fake Job Detection System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#1f2937,#2563eb);
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:900px;
+    background:white;
+    border-radius:20px;
+    padding:35px;
+    box-shadow:0 15px 35px rgba(0,0,0,.2);
+}
+
+h1{
+    text-align:center;
+    color:#111827;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#6b7280;
+    margin-bottom:25px;
+}
+
+textarea{
+    width:100%;
+    min-height:220px;
+    border:2px solid #d1d5db;
+    border-radius:12px;
+    padding:15px;
+    font-size:15px;
+    resize:vertical;
+    transition:.3s;
+}
+
+textarea:focus{
+    outline:none;
+    border-color:#2563eb;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    background:#1d4ed8;
+}
+
+.result{
+    margin-top:25px;
+    text-align:center;
+}
+
+.real{
+    background:#dcfce7;
+    color:#166534;
+    padding:15px;
+    border-radius:10px;
+    font-size:20px;
+    font-weight:600;
+}
+
+.fake{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:15px;
+    border-radius:10px;
+    font-size:20px;
+    font-weight:600;
+}
+
+.confidence{
+    margin-top:15px;
+}
+
+.progress{
+    width:100%;
+    height:12px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+    background:#2563eb;
+}
+
+.note{
+    margin-top:25px;
+    padding:15px;
+    background:#f9fafb;
+    border-left:5px solid #2563eb;
+    border-radius:8px;
+    color:#4b5563;
+}
+
+.footer{
+    margin-top:20px;
+    text-align:center;
+    color:#9ca3af;
+    font-size:14px;
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Fake Job Detection System</h1>
-        <p>Enter a job description to check whether it is real or fake.</p>
 
-        <form method="POST">
-            <textarea name="job_description" placeholder="Paste job description here...">{{ user_input }}</textarea>
-            <button type="submit">Predict</button>
-        </form>
+<div class="container">
 
-        {% if prediction_text %}
-            <div class="result">{{ prediction_text }}</div>
-        {% endif %}
+    <h1>Fake Job Detection System</h1>
+
+    <p class="subtitle">
+        Detect fraudulent job postings using NLP and Machine Learning
+    </p>
+
+    <form method="POST">
+
+        <textarea
+        name="job_description"
+        placeholder="Paste a job description here...">{{ user_input }}</textarea>
+
+        <button type="submit">
+            Analyze Job Posting
+        </button>
+
+    </form>
+
+    {% if prediction_text %}
+
+    <div class="result">
+
+        <div class="{% if 'Fake' in prediction_text %}fake{% else %}real{% endif %}">
+            {{ prediction_text }}
+        </div>
 
         {% if confidence_text %}
-            <div class="confidence">{{ confidence_text }}</div>
+
+        <div class="confidence">
+            <p>{{ confidence_text }}</p>
+
+            <div class="progress">
+                <div class="progress-bar"
+                     style="width:{{ confidence_text.split(': ')[1].replace('%','') }}%;">
+                </div>
+            </div>
+        </div>
+
         {% endif %}
 
-        <div class="note">
-            <strong>Note:</strong> This system uses NLP and Machine Learning. Text is cleaned, converted using TF-IDF, and classified using a trained ML model.
-        </div>
     </div>
+
+    {% endif %}
+
+    <div class="note">
+        <strong>How it works:</strong>
+        The text is cleaned, transformed using TF-IDF vectorization,
+        and classified using a trained Machine Learning model.
+    </div>
+
+    <div class="footer">
+        Built with Flask • Scikit-Learn • NLP
+    </div>
+
+</div>
+
 </body>
 </html>
