@@ -78,4 +78,8 @@ The model was evaluated using:
 
 The final model achieved good accuracy and improved fake job detection recall.
 
+## 🔗 Live Demo
+
+https://fake-job-detection-tau.vercel.app/
+
 
